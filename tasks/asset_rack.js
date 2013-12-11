@@ -8,43 +8,28 @@
 
 'use strict';
 
+var TASK_NAME = 'asset_rack'
+  , TASK_DESC ='Compile and publish static assets with asset-rack'
+
 module.exports = function(grunt) {
 
-  // Please see the Grunt documentation for more information regarding task
-  // creation: http://gruntjs.com/creating-tasks
+  grunt.registerMultiTask(TASK_NAME, TASK_DESC, function() {
 
-  grunt.registerMultiTask('asset_rack', 'Compile and publish static assets with asset-rack', function() {
-    // Merge task-specific and/or target-specific options with these defaults.
-    var options = this.options({
-      punctuation: '.',
-      separator: ', '
-    });
+    var options = this.options();
 
-    // Iterate over all specified file groups.
-    this.files.forEach(function(f) {
-      // Concat specified files.
-      var src = f.src.filter(function(filepath) {
-        // Warn on and remove invalid source files (if nonull was set).
-        if (!grunt.file.exists(filepath)) {
-          grunt.log.warn('Source file "' + filepath + '" not found.');
-          return false;
-        } else {
-          return true;
-        }
-      }).map(function(filepath) {
-        // Read file source.
-        return grunt.file.read(filepath);
-      }).join(grunt.util.normalizelf(options.separator));
+    var done = this.async()
 
-      // Handle options.
-      src += options.punctuation;
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0 // workaround for bucket name bug
 
-      // Write the destination file.
-      grunt.file.write(f.dest, src);
+    var assets = require(options.assetsFile)
 
-      // Print a success message.
-      grunt.log.writeln('File "' + f.dest + '" created.');
-    });
+    assets.deploy(options.cloud, function(err) {
+      if(err) {
+        grunt.log.error(err)
+        done(false)
+      }
+      grunt.log.writeln("Success: Deploy complete")
+      done()
+    })
   });
-
 };
