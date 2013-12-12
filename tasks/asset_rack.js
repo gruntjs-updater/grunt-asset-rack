@@ -21,7 +21,8 @@ module.exports = function(grunt) {
 
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0 // workaround for bucket name bug
 
-    var assets = require(options.assetsFile)
+    var assetsF = require(options.assetsFile)
+    var assets = assetsF(options.assetConfig)
 
     assets.deploy(options.cloud, function(err) {
       if(err) {
