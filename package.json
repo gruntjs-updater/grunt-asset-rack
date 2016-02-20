@@ -34,9 +34,11 @@
     "grunt": "~0.4.2"
   },
   "peerDependencies": {
-    "grunt": "~0.4.2"
+    "grunt": ">=0.4.0"
   },
   "keywords": [
-    "gruntplugin", "asset-rack", "assets"
+    "gruntplugin",
+    "asset-rack",
+    "assets"
   ]
 }
